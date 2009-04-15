@@ -230,7 +230,7 @@ Now we can return a pointer to MyInt easily enough. But what if you want to retu
 
 Keep in mind that picoc tries to protect your system from having its memory clobbered by managing its pointers carefully. The upshot is that picoc values and pointers are not the same as your system's native values and pointers. Don't be mistaken into believing that you can treat a picoc pointer like a native memory pointer - picoc specifically prevents this to help your system reliability.
 
-Rather than trying to pass native system pointers to your picoc program (which won't work) I suggest you write library functions which allow picoc to access your system's features in a more controlled way.
+Rather than trying to pass native system pointers to your picoc program (which won't work) I suggest you write library functions which allow picoc to access your system's features in a more controlled way. Alternatively you can share native variables with picoc as described below.
 
 
 = Variable numbers of parameters =
@@ -244,3 +244,18 @@ You can define your own stdarg-style library functions like printf(). Your funct
 The NumArgs parameter to the native C function lets you know how many parameters were passed in. You access the variable parameters just like normal parameters using the Param`[]` array.
 
 Take a look at *clibrary.c* for the full definition of LibPrintf() if you need a more complete example.
+
+
+= Sharing native values with picoc =
+
+Sometimes you have native variables you'd like to share with picoc. Just like I did in "Returning pointers" above we can define a value which shares memory with a native variable. Then we store this variable in the picoc symbol table so your programs can find it by name. There's an easy way to do this:
+{{{
+int RobotIsExploding = 0;
+
+void PlatformLibraryInit()
+{
+    VariableDefinePlatformVar(NULL, "RobotIsExploding", &IntType, (union AnyValue *)&RobotIsExploding, FALSE);
+}
+}}}
+
+The variable RobotIsExploding can be written by your native C program and read by picoc just like any other picoc variable. In this case it's protected from being written by the last parameter "IsWritable" being set to FALSE. Set it to TRUE and picoc can write it too.
