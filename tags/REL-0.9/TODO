@@ -1,0 +1,20 @@
+TODO
+
+Implement:
+* pointer arithmetic
+* ternary operator
+* casts
+* char access/char array access/char * access
+
+Improvements:
+* #define with arguments
+* fix type comparison to take into account array size
+* fix return of array types
+* expression and auto-cast support for all types
+* periodic heap cleanup
+* octal/hex character constants
+* see if we can use ParserCopyPos() in other places rather than copying everything
+* check for no value returned in functions with a return value
+
+Need test/debug:
+* new/delete heap allocation
