@@ -106,7 +106,7 @@ Note how I call ProgramFail() here if the pointer is invalid. You can use Progra
 
 == Passing strings / char `*` ==
 
-In this example I'll be reading a 'char `*`' parameter. It's pretty similar to the int * example above:
+In this example I'll be reading a 'char `*`' parameter. It's pretty similar to the 'int `*`' example above:
 
 {{{
     struct Value *CharArray = Param[0]->Val->Pointer.Segment;
@@ -194,4 +194,4 @@ Structures are represented in picoc as hash tables. We look up the hash table of
 
 Then we do the same thing for "j" and print out the result.
 
-Unions work exactly the same way as structures. Defining the prototype as "union" rather than "struct" and you're away.
+Unions work exactly the same way as structures. Define the prototype as "union" rather than "struct" and you're away.
