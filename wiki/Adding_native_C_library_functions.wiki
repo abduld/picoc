@@ -8,7 +8,7 @@ picoc allows you to define your own library functions. These functions are writt
 
 = How libraries work =
 
-Your picoc distribution will contain a two files which are used to define library functions for your system. If your system is called "foobar" you'll be using:
+Your picoc distribution contains two files which are used to define library functions for your system. If your system is called "foobar" you'll be using:
   * *library_foobar.c* - this is where the foobar-specific library functions go
   * *clibrary.c* - this is where standard C library functions like printf() are defined
 
