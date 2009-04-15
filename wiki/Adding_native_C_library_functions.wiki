@@ -246,6 +246,7 @@ The NumArgs parameter to the native C function lets you know how many parameters
 Take a look at *clibrary.c* for the full definition of LibPrintf() if you need a more complete example.
 
 
+
 = Sharing native values with picoc =
 
 Sometimes you have native variables you'd like to share with picoc. Just like I did in "Returning pointers" above we can define a value which shares memory with a native variable. Then we store this variable in the picoc symbol table so your programs can find it by name. There's an easy way to do this:
@@ -258,4 +259,4 @@ void PlatformLibraryInit()
 }
 }}}
 
-The variable RobotIsExploding can be written by your native C program and read by picoc just like any other picoc variable. In this case it's protected from being written by the last parameter "IsWritable" being set to FALSE. Set it to TRUE and picoc can write it too.
+The variable RobotIsExploding can be written by your native C program and read by picoc just like any other picoc variable. In this case it's protected from being written by the last parameter "IsWritable" being set to FALSE. Set it to TRUE and picoc will be able to write it too.
