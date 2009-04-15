@@ -195,3 +195,52 @@ Structures are represented in picoc as hash tables. We look up the hash table of
 Then we do the same thing for "j" and print out the result.
 
 Unions work exactly the same way as structures. Define the prototype as "union" rather than "struct" and you're away.
+
+
+= Returning values =
+
+Returning values from library functions is very much like accessing parameters. The type of return values is already set before your native C function is called so all you have to do is fill in the value.
+
+Just as with parameters, ints, chars and enums are stored in ReturnValue->Val->Integer and floating point values are returned in ReturnValue->Val->FP.
+
+
+== Returning pointers ==
+
+Pointers have two parts - a pointer to a "struct Value" and an offset. Usually your offset will be zero so your return code will look something like:
+
+{{{
+    ReturnValue->Val->Pointer.Segment = MyValue;
+    ReturnValue->Val->Pointer.Offset = 0;
+}}}
+
+That's simple enough but where does MyValue come from? It must be defined as a picoc value and since you're returning it it'll probably have to be on the picoc heap. We'll do that by defining a global variable in the library initialisation function which we'll later use to return values.
+
+{{{
+int MyInt = 0;
+struct Value *MyValue;
+
+void PlatformLibraryInit()
+{
+    /* create a variable on the heap with data in MyInt */
+    MyValue = VariableAllocValueFromExistingData(NULL, &IntType, (union AnyValue *)&MyInt, TRUE, NULL);
+}
+}}}
+
+Now we can return a pointer to MyInt easily enough. But what if you want to return a pointer to an arbitrary int in memory rather than a picoc-managed int?
+
+Keep in mind that picoc tries to protect your system from having its memory clobbered by managing its pointers carefully. The upshot is that picoc values and pointers are not the same as your system's native values and pointers. Don't be mistaken into believing that you can treat a picoc pointer like a native memory pointer - picoc specifically prevents this to help your system reliability.
+
+Rather than trying to pass native system pointers to your picoc program (which won't work) I suggest you write library functions which allow picoc to access your system's features in a more controlled way.
+
+
+= Variable numbers of parameters =
+
+You can define your own stdarg-style library functions like printf(). Your function prototype should use "..." in the parameter list to indicate the potential extra parameters just like the standard stdarg system. Here's an example from clibrary.c:
+
+{{{
+    { LibPrintf,        "void printf(char *, ...)" },
+}}}
+
+The NumArgs parameter to the native C function lets you know how many parameters were passed in. You access the variable parameters just like normal parameters using the Param`[]` array.
+
+Take a look at *clibrary.c* for the full definition of LibPrintf() if you need a more complete example.
