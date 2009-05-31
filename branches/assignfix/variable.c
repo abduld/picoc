@@ -99,7 +99,7 @@ struct Value *VariableAllocValueAndData(struct ParseState *Parser, int DataSize,
 }
 
 /* allocate a value given its type */
-struct Value *VariableAllocValueFromType(struct ParseState *Parser, struct ValueType *Typ, int IsLValue, struct Value *LValueFrom)
+struct Value *VariableAllocValueFromType(struct ParseState *Parser, struct ValueType *Typ, int IsLValue, struct Value *LValueFrom, int OnHeap)
 {
     int Size = TypeSize(Typ, Typ->ArraySize, FALSE);
     struct Value *NewValue = VariableAllocValueAndData(Parser, Size, IsLValue, LValueFrom, FALSE);
@@ -145,15 +145,21 @@ struct Value *VariableAllocValueShared(struct ParseState *Parser, struct Value *
 }
 
 /* define a variable. Ident must be registered */
-void VariableDefine(struct ParseState *Parser, char *Ident, struct Value *InitValue, int MakeWritable)
+struct Value *VariableDefine(struct ParseState *Parser, char *Ident, struct Value *InitValue, struct ValueType *Typ, int MakeWritable)
 {
-    struct Value *AssignValue = VariableAllocValueAndCopy(Parser, InitValue, TopStackFrame == NULL);
+    struct Value *AssignValue;
     
-    if (MakeWritable)
-        AssignValue->IsLValue = TRUE;
+    if (InitValue != NULL)
+        AssignValue = VariableAllocValueAndCopy(Parser, InitValue, TopStackFrame == NULL);
+    else
+        AssignValue = VariableAllocValueFromType(Parser, Typ, MakeWritable, NULL, TopStackFrame == NULL);
+    
+    AssignValue->IsLValue = MakeWritable;
         
     if (!TableSet((TopStackFrame == NULL) ? &GlobalTable : &TopStackFrame->LocalTable, Ident, AssignValue))
         ProgramFail(Parser, "'%s' is already defined", Ident);
+    
+    return AssignValue;
 }
 
 /* check if a variable with a given name is defined. Ident must be registered */
