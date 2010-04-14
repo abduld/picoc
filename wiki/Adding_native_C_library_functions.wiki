@@ -134,11 +134,11 @@ Now let's say we're going to define a function to display a complex number. Our 
 And finally we can define the library function:
 
 {{{
-struct complex { int i; int j; };  /* make this C delcaration match the picoc one */
+struct complex { int i; int j; };  /* make this C declaration match the picoc one */
 
 void ShowComplex(struct ParseState *Parser, struct Value *ReturnValue, struct Value **Param, int NumArgs)
 {
-    struct complex *ComplexVal = Param[0]->Val->NativePointer;  /* dereferences the pointer */
+    struct complex *ComplexVal = Param[0]->Val->NativePointer;  /* casts the pointer */
         
     /* print the result */
     PrintInt(ComplexVal->i, PlatformPutc);
