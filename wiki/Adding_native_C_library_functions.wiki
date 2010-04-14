@@ -80,28 +80,11 @@ We've seen how to pass integers into functions. What about passing other data ty
 
 Pointer parameters are slighty more complicated to access since you have to dereference the pointer to get at the underlying data.
 
-The behind-the-scene definition of pointers in picoc tries to protect the embedded system from programmer errors by making pointers safer. It does this by tracking some more information about what the pointer's pointing to. This makes accessing a pointer a little more complicated but prevents your system from crashing.
-
-Pointers are defined as:
-  * a value which the pointer points to, plus
-  * an offset into the value if it's an array or a struct and you're not pointing to the first element
-
-For safety we prevent pointers from referring to non-existent memory or from accessing memory outside certain bounds.
-
 Here's how we dereference a pointer parameter. In this example I'll be reading an 'int `*`' parameter:
 
 {{{
-    struct Value *IntArray = Param[0]->Val->Pointer.Segment;
-    int Offset = Param[0]->Val->Pointer.Offset;
-    int IntValue;
-    
-    if (Offset < 0 || Offset > (IntArray->Val->Array.Size-1) * sizeof(int))
-        ProgramFail(Parser, "invalid pointer");
-    else
-        IntValue = *(int *)(IntArray->Val->Array.Data + Offset);
+    int IntValue = *(int *)Param[0]->Val->NativePointer;
 }}}
-
-Note how I call ProgramFail() here if the pointer is invalid. You can use ProgramFail() for any other errors you encounter as well. ProgramFail() works like printf() - it accepts formatting and a variable number of parameters.
 
 
 == Passing strings / char `*` ==
@@ -109,19 +92,10 @@ Note how I call ProgramFail() here if the pointer is invalid. You can use Progra
 In this example I'll be reading a 'char `*`' parameter. It's pretty similar to the 'int `*`' example above:
 
 {{{
-    struct Value *CharArray = Param[0]->Val->Pointer.Segment;
-    int Offset = Param[0]->Val->Pointer.Offset;
-    char *CharPtr;
-    
-    if (Offset < 0 || Offset >= CharArray->Val->Array.Size)
-        CharPtr = StrEmpty;
-    else
-        CharPtr = CharArray->Val->Array.Data + Param[0]->Val->Pointer.Offset;
+    char *CharPtr = (char *)Param[0]->Val->NativePointer;
 }}}
 
 picoc strings work like C strings - they're pointers to arrays of characters, terminated by a null character. Once you have the C char `*` you can use it just like a normal C string.
-
-Note that in this case if the pointer was invalid I've chosen to return an empty string rather than stopping the program. You can choose whichever approach suits your application best.
 
 Pointers to arrays of other data types work the same way.
 
@@ -160,39 +134,22 @@ Now let's say we're going to define a function to display a complex number. Our 
 And finally we can define the library function:
 
 {{{
+struct Ccomplex
+{
+    int i;
+    int j;
+};
+
 void ShowComplex(struct ParseState *Parser, struct Value *ReturnValue, struct Value **Param, int NumArgs)
 {
-    struct Value *ComplexVal = Param[0]->Val->Pointer.Segment;  /* dereferences the pointer - note that I'm cheating by not using the offset here */
-    struct Value *RealOffset;
-    struct Value *ComplexOffset;
-    int RealPart;
-    int ComplexPart;
-    struct ValueType *StructComplexType;
-    
-    /* find the type */
-    StructComplexType = TypeGetMatching(Parser, &UberType, TypeStruct, 0, TableStrRegister("complex"));
-    
-    /* get the real and complex members */
-    TableGet(StructComplexType->Members, TableStrRegister("i"), &RealOffset);
-    RealPart = *(int *)((void *)ComplexVal->Val + RealOffset->Val->Integer);
-    
-    TableGet(StructComplexType->Members, TableStrRegister("j"), &ComplexOffset);
-    ComplexPart = *(int *)((void *)ComplexVal->Val + ComplexOffset->Val->Integer);
-    
+    struct Ccomplex *ComplexVal = Param[0]->Val->NativePointer;  /* dereferences the pointer */
+        
     /* print the result */
-    PrintInt(RealPart, PlatformPutc);
+    PrintInt(ComplexVal->i, PlatformPutc);
     PlatformPutc(',');
-    PrintInt(ComplexPart, PlatformPutc);
+    PrintInt(ComplexVal->j, PlatformPutc);
 }
 }}}
-
-Note that I've cheated a little here to make the example simpler. I dereferenced the pointer without using the pointer offset as I should have. This means that pointer arithmetic won't work correctly on that pointer so you're probably best advised to do it the long way shown in the previous sections.
-
-The next step is to find the definition of the struct. This looks up a table of data types to find the correct one.
-
-Structures are represented in picoc as hash tables. We look up the hash table of members of "struct complex" to find the member "i". This gives us an offset into our value where the data for "i" is stored. Then we use that offset to calculate "i"s address inside the parameter and dereference that pointer to (finally) get "i"s value.
-
-Then we do the same thing for "j" and print out the result.
 
 Unions work exactly the same way as structures. Define the prototype as "union" rather than "struct" and you're away.
 
@@ -206,31 +163,11 @@ Just as with parameters, ints, chars and enums are stored in ReturnValue->Val->I
 
 == Returning pointers ==
 
-Pointers have two parts - a pointer to a "struct Value" and an offset. Usually your offset will be zero so your return code will look something like:
+Returning a pointer to a static string or some other allocated data is easy. Your return code will look something like:
 
 {{{
-    ReturnValue->Val->Pointer.Segment = MyValue;
-    ReturnValue->Val->Pointer.Offset = 0;
+    ReturnValue->Val->NativePointer = "hello";
 }}}
-
-That's simple enough but where does MyValue come from? It must be defined as a picoc value and since you're returning it it'll probably have to be on the picoc heap. We'll do that by defining a global variable in the library initialisation function which we'll later use to return values.
-
-{{{
-int MyInt = 0;
-struct Value *MyValue;
-
-void PlatformLibraryInit()
-{
-    /* create a variable on the heap with data in MyInt */
-    MyValue = VariableAllocValueFromExistingData(NULL, &IntType, (union AnyValue *)&MyInt, TRUE, NULL);
-}
-}}}
-
-Now we can return a pointer to MyInt easily enough. But what if you want to return a pointer to an arbitrary int in memory rather than a picoc-managed int?
-
-Keep in mind that picoc tries to protect your system from having its memory clobbered by managing its pointers carefully. The upshot is that picoc values and pointers are not the same as your system's native values and pointers. Don't be mistaken into believing that you can treat a picoc pointer like a native memory pointer - picoc specifically prevents this to help your system reliability.
-
-Rather than trying to pass native system pointers to your picoc program (which won't work) I suggest you write library functions which allow picoc to access your system's features in a more controlled way. Alternatively you can share native variables with picoc as described below.
 
 
 = Variable numbers of parameters =
@@ -249,7 +186,7 @@ Take a look at *clibrary.c* for the full definition of LibPrintf() if you need a
 
 = Sharing native values with picoc =
 
-Sometimes you have native variables you'd like to share with picoc. Just like I did in "Returning pointers" above we can define a value which shares memory with a native variable. Then we store this variable in the picoc symbol table so your programs can find it by name. There's an easy way to do this:
+Sometimes you have native variables you'd like to share with picoc. We can define a picoc value which shares memory with a native variable. Then we store this variable in the picoc symbol table so your programs can find it by name. There's an easy way to do this:
 {{{
 int RobotIsExploding = 0;
 
