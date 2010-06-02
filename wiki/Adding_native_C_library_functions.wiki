@@ -113,12 +113,12 @@ void PlatformLibraryInit()
     char *Identifier;
     struct ValueType *ParsedType;
     void *Tokens;
-    const char *IntrinsicName = TableStrRegister("platform library");
+    const char *IntrinsicName = TableStrRegister("complex library");
     const char *StructDefinition = "struct complex { int i; int j; }";
     
     /* define an example structure */
     Tokens = LexAnalyse(IntrinsicName, StructDefinition, strlen(StructDefinition), NULL);
-    LexInitParser(&Parser, Tokens, IntrinsicName, 1, TRUE);
+    LexInitParser(&Parser, StructDefinition, Tokens, IntrinsicName, TRUE);
     TypeParse(&Parser, &ParsedType, &Identifier);
     HeapFree(Tokens);
 }
