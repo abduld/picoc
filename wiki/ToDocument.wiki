@@ -1,0 +1,10 @@
+#summary A list of things I should document for v2.0
+
+= Starting picoc =
+
+  * Command line parameters
+  * STACKSIZE environment variable
+
+= Language =
+
+  * Deviations from the C99 standard
