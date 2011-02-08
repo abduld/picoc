@@ -1,0 +1,50 @@
+#summary How PicoC differs from C99
+
+= How PicoC differs from C99 =
+
+PicoC is a Tiny C language, not a complete implementation of C99. It doesn't aim to implement every single feature of C99 but it does aim to be close enough that most programs will run with only minor modification at most.
+
+PicoC also has scripting abilities which enhance it beyond what C99 offers.
+
+= Differences from C99 =
+
+== C preprocessor ==
+
+There is no true preprocessor in PicoC. The most popular preprocessor features are implemented in a slightly limited way.
+
+=== #define ===
+
+#define macros are implemented but have some limitations. They can only be used as part of expressions and operate a bit like functions. Since they're used in expressions they must result in a value.
+
+=== #if / #ifdef / #else / #endif ===
+
+
+
+=== #include ===
+
+
+== Function declarations ==
+
+This style of function declaration is supported:
+
+int my_function(char param1, int param2, char *param3)
+{
+   ...
+}
+
+Functions with no parameters are declared like:
+
+int my_other_function()
+{
+   ...
+}
+
+No other forms of function declaration are supported - ie. the old K&R style declaration is not supported, and neither is declaring functions with no parameters as int fred(void);
+
+== Function pointers ==
+
+Pointers to functions are currently not supported
+
+== Structure packing ==
+
+Due to the large number of different ways this is done on different architectures this is currently not guaranteed to correspond to the exact packing method used by your native C compiler. You can manually pack structures to match your native C compiler however.
