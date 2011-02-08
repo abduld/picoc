@@ -1,14 +1,14 @@
 #summary How PicoC differs from C99
 
-= How PicoC differs from C99 =
+= How picoc differs from C99 =
 
-PicoC is a Tiny C language, not a complete implementation of C99. It doesn't aim to implement every single feature of C99 but it does aim to be close enough that most programs will run with only minor modification at most.
+picoc is a tiny C language, not a complete implementation of C99. It doesn't aim to implement every single feature of C99 but it does aim to be close enough that most programs will run without modification.
 
-PicoC also has scripting abilities which enhance it beyond what C99 offers.
+picoc also has scripting abilities which enhance it beyond what C99 offers.
 
 == C preprocessor ==
 
-There is no true preprocessor in PicoC. The most popular preprocessor features are implemented in a slightly limited way.
+There is no true preprocessor in picoc. The most popular preprocessor features are implemented in a slightly limited way.
 
 == #define ==
 
@@ -16,16 +16,17 @@ There is no true preprocessor in PicoC. The most popular preprocessor features a
 
 == #if / #ifdef / #else / #endif ==
 
-
+The conditional compilation operators are implemented, but have some limitations. The operator "defined()" is not implemented. These operators can only be used at statement boundaries.
 
 == #include ==
 
+#include is supported however the level of support depends on the specific port of picoc on your platform. Linux/UNIX and cygwin support #include fully.
 
 = Function declarations =
 
 This style of function declaration is supported:
 
-int my_function(char param1, int param2, char *param3)
+int my_function(char param1, int param2, char `*`param3)
 {
    ...
 }
@@ -41,8 +42,34 @@ No other forms of function declaration are supported - ie. the old K&R style dec
 
 = Function pointers =
 
-Pointers to functions are currently not supported
+Pointers to functions are currently not supported.
 
 = Structure packing =
 
 Due to the large number of different ways this is done on different architectures this is currently not guaranteed to correspond to the exact packing method used by your native C compiler. You can manually pack structures to match your native C compiler however.
+
+= Linking with libraries =
+
+Because picoc is an interpreter (and not a compiler) libraries must be linked with picoc itself and a glue module written to interface to picoc. This is the same as other interpreters like python.
+
+Check the interface to the C standard library time functions in cstdlib/time.c if you're looking for an example of how to do this.
+
+= Scripting enhancements =
+
+== Interactive mode ==
+
+picoc can be used interactively, from a command line. In Linux/UNIX/cygwin run it as "picoc -i" and you'll be presented with a picoc command prompt. You can type programs directly into the picoc command line and call functions directly as well.
+
+Unlike standard C you can write C commands directly on the command line and they'll be executed immediately. eg.
+
+{{{
+int i;
+for (i = 1; i <= 10; i++)
+    printf("Hello world: %d\n", i);
+}}}
+
+Use "exit(0);" or your operating system's end of file character to quit the interactive mode. (Control-D is end of file in Linux/UNIX)
+
+== delete ==
+
+You may want to delete a function or variable declaration in interactive mode so you can re-declare it. Use "delete whatever;" to do this.
