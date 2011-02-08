@@ -85,3 +85,23 @@ Use "exit(0);" or your operating system's end of file character to quit the inte
 == Deleting functions or variables ==
 
 You may want to delete a function or variable declaration in interactive mode so you can re-declare it. Use "delete whatever;" to do this.
+
+== Running programs from the command line ==
+
+If you're running a picoc program from the command line on Linux/UNIX/cygwin you can invoke it like:
+
+{{{
+picoc <module1.c> <module2.c>...
+}}}
+
+To use command line arguments with it do:
+
+{{{
+picoc <module1.c> <module2.c>... - arg1 arg2...
+}}}
+
+If you're running a script which has no main() function run:
+
+{{{
+picoc -m <module1.c> <module2.c>... - arg1 arg2...
+}}}
