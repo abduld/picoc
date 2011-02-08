@@ -46,6 +46,8 @@ Pointers to functions are currently not supported.
 
 = Structure packing =
 
+C compilers on different architectures organise structure members into memory in slightly different ways. This will only affect you if you're passing structures to or from native functions.
+
 Due to the large number of different ways this is done on different architectures this is currently not guaranteed to correspond to the exact packing method used by your native C compiler. You can manually pack structures to match your native C compiler however.
 
 = Linking with libraries =
