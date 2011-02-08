@@ -70,6 +70,6 @@ for (i = 1; i <= 10; i++)
 
 Use "exit(0);" or your operating system's end of file character to quit the interactive mode. (Control-D is end of file in Linux/UNIX)
 
-== delete ==
+== Deleting functions or variables ==
 
 You may want to delete a function or variable declaration in interactive mode so you can re-declare it. Use "delete whatever;" to do this.
