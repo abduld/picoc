@@ -70,7 +70,13 @@ If you're looking for an example check the interface to the C standard library t
 
 == Interactive mode ==
 
-picoc can be used interactively, from a command line. In Linux/UNIX/cygwin run it as "picoc -i" and you'll be presented with a picoc command prompt. You can type programs directly into the picoc command line and call functions directly as well.
+picoc can be used interactively, from a command line. In Linux/UNIX/cygwin run it as:
+
+{{{
+picoc <module1.c> <module2.c>...
+}}}
+
+You'll be presented with a picoc command prompt. You can type programs directly into the picoc command line and call functions directly as well.
 
 Unlike standard C you can write C commands directly on the command line and they'll be executed immediately. eg.
 
