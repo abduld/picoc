@@ -62,9 +62,9 @@ Due to the large number of different ways this is done on different architecture
 
 = Linking with libraries =
 
-Because picoc is an interpreter (and not a compiler) libraries must be linked with picoc itself and a glue module written to interface to picoc. This is the same as other interpreters like python.
+Because picoc is an interpreter (and not a compiler) libraries must be linked with picoc itself. Also a glue module must be written to interface to picoc. This is the same as other interpreters like python.
 
-Check the interface to the C standard library time functions in cstdlib/time.c if you're looking for an example of how to do this.
+If you're looking for an example check the interface to the C standard library time functions in cstdlib/time.c.
 
 = Scripting enhancements =
 
