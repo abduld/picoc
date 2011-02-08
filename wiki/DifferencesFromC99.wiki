@@ -94,7 +94,7 @@ If you're running a picoc program from the command line on Linux/UNIX/cygwin you
 picoc <module1.c> <module2.c>...
 }}}
 
-To use command line arguments with it do:
+The main() function will be run once the program is loaded. To use command line arguments with it do:
 
 {{{
 picoc <module1.c> <module2.c>... - arg1 arg2...
