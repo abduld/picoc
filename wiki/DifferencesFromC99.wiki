@@ -44,6 +44,12 @@ No other forms of function declaration are supported - ie. the old K&R style dec
 
 Pointers to functions are currently not supported.
 
+= Storage classes =
+
+Many of the storage classes in C99 really only have meaning in a compiler so they're not implemented in picoc. This includes: extern, volatile, register and auto.
+
+'static' is recognised but is currently ignored.
+
 = Structure packing =
 
 C compilers on different architectures organise structure members into memory in slightly different ways. This will only affect you if you're passing structures to or from native functions.
