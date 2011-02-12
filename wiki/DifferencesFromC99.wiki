@@ -86,7 +86,7 @@ for (i = 1; i <= 10; i++)
     printf("Hello world: %d\n", i);
 }}}
 
-Use "exit(0);" or your operating system's end of file character to quit the interactive mode. (Control-D is end of file in Linux/UNIX)
+Use your operating system's end of file character to quit the interactive mode. (Control-D is end of file in Linux/UNIX)
 
 == Deleting functions or variables ==
 
