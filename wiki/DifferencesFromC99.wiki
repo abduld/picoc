@@ -33,16 +33,7 @@ int my_function(char param1, int param2, char *param3)
 }
 }}}
 
-Functions with no parameters are declared like:
-
-{{{
-int my_other_function()
-{
-   ...
-}
-}}}
-
-No other forms of function declaration are supported - ie. the old K&R style declaration is not supported, and neither is declaring functions with no parameters as int fred(void);
+The old "K&R" form of function declaration is not supported.
 
 = Function pointers =
 
