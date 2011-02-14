@@ -35,6 +35,11 @@ int my_function(char param1, int param2, char *param3)
 
 The old "K&R" form of function declaration is not supported.
 
+= Predefined macros =
+
+A macro is provided to allow programs to display the picoc version:
+* PICOC_VERSION - gives the picoc version as a string eg. "v2.1 beta r524"
+
 = Function pointers =
 
 Pointers to functions are currently not supported.
