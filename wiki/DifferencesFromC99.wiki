@@ -43,10 +43,6 @@ Pointers to functions are currently not supported.
 
 Many of the storage classes in C99 really only have meaning in a compiler so they're not implemented in picoc. This includes: static, extern, volatile, register and auto. They're recognised but currently ignored.
 
-= Bracketed complex data types =
-
-Currently brackets aren't permitted in data types. You can work around this using typedef if you need to specify a type of this complexity.
-
 = Structure packing =
 
 C compilers on different architectures organise structure members into memory in slightly different ways. This will only affect you if you're passing structures to or from native functions.
