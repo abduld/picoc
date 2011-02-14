@@ -45,7 +45,7 @@ Many of the storage classes in C99 really only have meaning in a compiler so the
 
 = Bracketed complex data types =
 
-Currently brackets aren't permitted in data types. You can work around this using typedef.
+Currently brackets aren't permitted in data types. You can work around this using typedef if you need to specify a type of this complexity.
 
 = Structure packing =
 
