@@ -49,11 +49,9 @@ Pointers to functions are currently not supported.
 
 Many of the storage classes in C99 really only have meaning in a compiler so they're not implemented in picoc. This includes: static, extern, volatile, register and auto. They're recognised but currently ignored.
 
-= Structure packing =
+= struct and unions =
 
-C compilers on different architectures organise structure members into memory in slightly different ways. This will only affect you if you're passing structures to or from native functions.
-
-Due to the large number of different ways this is done on different architectures this is currently not guaranteed to correspond to the exact packing method used by your native C compiler. You can manually pack structures to match your native C compiler however.
+Structs and unions can only be defined globally. It's not possible to define them within the scope of a function.
 
 = Linking with libraries =
 
