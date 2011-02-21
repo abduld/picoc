@@ -55,11 +55,21 @@ Many of the storage classes in C99 really only have meaning in a compiler so the
 
 Structs and unions can only be defined globally. It's not possible to define them within the scope of a function.
 
+Bitfields in structs are not supported.
+
 = Linking with libraries =
 
 Because picoc is an interpreter (and not a compiler) libraries must be linked with picoc itself. Also a glue module must be written to interface to picoc. This is the same as other interpreters like python.
 
 If you're looking for an example check the interface to the C standard library time functions in cstdlib/time.c.
+
+= goto =
+
+The goto statement is implemented, but only supports forward gotos, not backward. The rationale for this is that backward gotos are not necessary for any "legitimate" use of goto. 
+
+Some discussion on this topic:
+  * http://www.cprogramming.com/tutorial/goto.html
+  * http://kerneltrap.org/node/553/2131
 
 = Scripting enhancements =
 
