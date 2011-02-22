@@ -1,10 +1,10 @@
-#summary How PicoC differs from C99
+#summary How PicoC differs from C90
 
-= How picoc differs from C99 =
+= How picoc differs from C90 =
 
-picoc is a tiny C language, not a complete implementation of C99. It doesn't aim to implement every single feature of C99 but it does aim to be close enough that most programs will run without modification.
+picoc is a tiny C language, not a complete implementation of C90. It doesn't aim to implement every single feature of C90 but it does aim to be close enough that most programs will run without modification.
 
-picoc also has scripting abilities which enhance it beyond what C99 offers.
+picoc also has scripting abilities which enhance it beyond what C90 offers.
 
 == C preprocessor ==
 
@@ -49,7 +49,7 @@ Pointers to functions are currently not supported.
 
 = Storage classes =
 
-Many of the storage classes in C99 really only have meaning in a compiler so they're not implemented in picoc. This includes: static, extern, volatile, register and auto. They're recognised but currently ignored.
+Many of the storage classes in C90 really only have meaning in a compiler so they're not implemented in picoc. This includes: static, extern, volatile, register and auto. They're recognised but currently ignored.
 
 = struct and unions =
 
