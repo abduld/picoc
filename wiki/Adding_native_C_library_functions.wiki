@@ -117,6 +117,13 @@ const char *definition = "struct complex { int i; int j; };";
 PicocParse("my lib", definition, strlen(definition), TRUE, TRUE, FALSE);
 }}}
 
+The same method works for defining macros too:
+
+{{{
+const char *definition = "#define ABS(a) ((a) < (0) ? -(a) : (a))";
+PicocParse("my lib", definition, strlen(definition), TRUE, TRUE, FALSE);
+}}}
+
 Here's a more sophisticated method, using the internal functions of picoc directly:
 
 {{{
