@@ -104,7 +104,20 @@ Pointers to arrays of other data types work the same way.
 
 If you're defining library functions which take structures as parameters you'll have to do a little more work. You need to pre-define the structure so the function prototype can refer to it.
 
-In *library_XXX.c* you'll find a function called PlatformLibraryInit(). This is called before the library prototypes are defined. Here's some code which will define a complex number structure:
+In *library_XXX.c* you'll find a function called PlatformLibraryInit(). This is called before the library prototypes are defined. Here's a quick was to define a complex number structure as if it was defined in an include file:
+
+{{{
+IncludeRegister("win32.h", &win32SetupFunc, &win32Functions[0], "struct complex { int i; int j; };");
+}}}
+
+Or you could just parse the structure directly:
+
+{{{
+const char *definition = "struct complex { int i; int j; };";
+PicocParse("my lib", definition, strlen(definition), TRUE, TRUE, FALSE);
+}}}
+
+Here's a more sophisticated method, using the internal functions of picoc directly:
 
 {{{
 void PlatformLibraryInit()
@@ -113,13 +126,13 @@ void PlatformLibraryInit()
     char *Identifier;
     struct ValueType *ParsedType;
     void *Tokens;
-    const char *IntrinsicName = TableStrRegister("complex library");
+    char *IntrinsicName = TableStrRegister("complex library");
     const char *StructDefinition = "struct complex { int i; int j; }";
     
     /* define an example structure */
     Tokens = LexAnalyse(IntrinsicName, StructDefinition, strlen(StructDefinition), NULL);
-    LexInitParser(&Parser, StructDefinition, Tokens, IntrinsicName, TRUE);
-    TypeParse(&Parser, &ParsedType, &Identifier);
+    LexInitParser(&Parser, StructDefinition, Tokens, IntrinsicName, TRUE, FALSE);
+    TypeParse(&Parser, &ParsedType, &Identifier, &IsStatic);
     HeapFree(Tokens);
 }
 }}}
