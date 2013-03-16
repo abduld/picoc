@@ -104,7 +104,7 @@ Pointers to arrays of other data types work the same way.
 
 If you're defining library functions which take structures as parameters you'll have to do a little more work. You need to pre-define the structure so the function prototype can refer to it.
 
-In *library_XXX.c* you'll find a function called PlatformLibraryInit(). This is called before the library prototypes are defined. Here's a quick was to define a complex number structure as if it was defined in an include file:
+In *library_XXX.c* you'll find a function called PlatformLibraryInit(). This is called before the library prototypes are defined. Here's a quick way to define a complex number structure as if it was defined in an include file:
 
 {{{
 IncludeRegister("win32.h", &win32SetupFunc, &win32Functions[0], "struct complex { int i; int j; };");
